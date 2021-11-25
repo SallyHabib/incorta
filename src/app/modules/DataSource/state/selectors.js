@@ -1,30 +1,36 @@
- import { createSelector } from 'reselect';
- import { defaultState } from './reducer';
- 
- const selectDataSource = state => state.dataSourceReducer || defaultState;
- 
- const makeSelectColumns = () =>
-   createSelector(
+import { createSelector } from "reselect";
+import { defaultState } from "./reducer";
+
+const selectDataSource = (state) => state.dataSourceReducer || defaultState;
+
+const makeSelectColumns = () =>
+  createSelector(
     selectDataSource,
-    dataSourceState => dataSourceState.columns,
-   );
- 
- const makeSelectLoading = () =>
-   createSelector(
+    (dataSourceState) => dataSourceState.columns
+  );
+
+const makeSelectData = () =>
+  createSelector(
     selectDataSource,
-    dataSourceState => dataSourceState.loading,
-   );
- 
+    (dataSourceState) => dataSourceState.data
+  );
+
+const makeSelectLoading = () =>
+  createSelector(
+    selectDataSource,
+    (dataSourceState) => dataSourceState.loading
+  );
+
 //  const makeSelectErrorMessage = () =>
 //    createSelector(
 //     selectDataSource,
 //     shipmentsState => shipmentsState.errorMessage,
 //    );
-  
- export {
+
+export {
   selectDataSource,
   makeSelectColumns,
-   makeSelectLoading,
+  makeSelectLoading,
+  makeSelectData
   //  makeSelectErrorMessage
- };
- 
+};

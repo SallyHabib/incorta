@@ -8,6 +8,7 @@ import {
 export const defaultState = {
   columns: [],
   loading: false,
+  data:[]
 };
 
 export const dataSourceReducer = (state = defaultState, action) => {

@@ -1608,6 +1608,13 @@
     prop-types "^15.7.2"
     react-is "^17.0.2"
 
+"@mui/icons-material@^5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-5.2.0.tgz#6c6135bb2d7891e29d6f9419df402b82dd663517"
+  integrity sha512-NvyrVaGKpP4R1yFw8BCnE0QcsQ67RtpgxPr4FtH8q60MDYPuPVczLOn5Ash5CFavoDWur/NfM/4DpT54yf3InA==
+  dependencies:
+    "@babel/runtime" "^7.16.3"
+
 "@mui/material@^5.2.1":
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/@mui/material/-/material-5.2.1.tgz#ef75df33da37ed6de1aadf66d2e33fea9685cd0d"
@@ -9536,7 +9543,7 @@ prop-types-extra@^1.1.0:
     react-is "^16.3.2"
     warning "^4.0.0"
 
-prop-types@^15.5.7, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.5.7, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -9764,6 +9771,14 @@ react-dom@^16.13.1:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.19.1"
+
+react-draggable@^4.4.4:
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-4.4.4.tgz#5b26d9996be63d32d285a426f41055de87e59b2f"
+  integrity sha512-6e0WdcNLwpBx/YIDpoyd2Xb04PB0elrDrulKUgdrIlwuYvxh5Ok9M+F8cljm8kPXXs43PmMzek9RrB1b7mLMqA==
+  dependencies:
+    clsx "^1.1.1"
+    prop-types "^15.6.0"
 
 react-error-overlay@^6.0.7:
   version "6.0.9"
