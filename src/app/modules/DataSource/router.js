@@ -4,17 +4,17 @@ import {
   Switch,
   Route
 } from "react-router-dom";
-import {Shipments} from './components/Shimpments';
+import DataSource from './components/DataSource';
 
-const ShimpmentsRoutes = () => {
+const DataSourceRoutes = () => {
   return (
     <Router>
       <Switch>
-        <Route exact path="/" component={Shipments} />
+        <Route exact path="/" component={DataSource} />
       </Switch>
 
     </Router>
   )
 };
 
-export default ShimpmentsRoutes;
+export default DataSourceRoutes;
