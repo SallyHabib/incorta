@@ -15,6 +15,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/material/styles";
 import Draggable from "react-draggable";
+import CustomizedHook from "./CustomizedHook";
 import { LineChart, XAxis, Tooltip, CartesianGrid, Line } from "recharts";
 
 const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
@@ -82,7 +83,25 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
   let dataManipulated = data[0]?.values.map((value, index) => {
     return { product: value, cost: data[1]?.values[index] };
   });
-  console.log(dataManipulated);
+
+  let dimensionsArray = [];
+  dimensionsArray = columns.reduce(function (filtered, column) {
+    if (column.function === "dimension") {
+      var someNewValue = { title: column.name };
+      filtered.push(someNewValue);
+    }
+    return filtered;
+  }, []);
+
+  let measuresArray = [];
+  measuresArray = columns.reduce(function (filtered, column) {
+    if (column.function === "measure") {
+      var someNewValue = { title: column.name };
+      filtered.push(someNewValue);
+    }
+    return filtered;
+  }, []);
+
   return (
     <Grid container flexDirection="column">
       <Grid item xs={2}>
@@ -103,34 +122,16 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
                 })}
               </Grid>
               <Grid item xs={9}>
-                <div style={{ margin: 20 }}>
-                  <InputWrapper
-                  // ref={setAnchorEl}
-                  // className={focused ? "focused" : ""}
-                  >
-                    {/* {value.map((option, index) => ( */}
-                    <div>
-                      <span>"hello span"</span>
-                      <CloseIcon onClick={console.log("delte")} />
-                    </div>
-                    {/* ))} */}
-                    {/* <input {...getInputProps()} /> */}
-                  </InputWrapper>
-                </div>
-                <div style={{ margin: 20 }}>
-                  <InputWrapper
-                  // ref={setAnchorEl}
-                  // className={focused ? "focused" : ""}
-                  >
-                    {/* {value.map((option, index) => ( */}
-                    <div>
-                      <span>"hello span"</span>
-                      <CloseIcon onClick={console.log("delte")} />
-                    </div>
-                    {/* ))} */}
-                    {/* <input {...getInputProps()} /> */}
-                  </InputWrapper>
-                </div>
+                <CustomizedHook
+                  defaultValue={{ title: "product" }}
+                  optionsProps={dimensionsArray}
+                  title={"dimension"}
+                />
+                <CustomizedHook
+                  defaultValue={{ title: "cost" }}
+                  optionsProps={measuresArray}
+                  title={"measure"}
+                />
               </Grid>
             </Grid>
           </CardContent>
