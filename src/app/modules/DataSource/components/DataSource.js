@@ -84,55 +84,77 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
   });
   console.log(dataManipulated);
   return (
-    <Grid container flexDirection="row">
+    <Grid container flexDirection="column">
       <Grid item xs={2}>
-        <Card sx={{ height: 500 }}>
+        <Card sx={{ height: 800, width: 1000 }}>
           <CardContent>
-            {columns.map((column) => {
-              return (
-                <Draggable grid={[100,100]}>
-                  <div>{column.name}</div>
-                </Draggable>
-              );
-            })}
+            <Grid container flexDirection="row">
+              <Grid item xs={3}>
+                {columns.map((column) => {
+                  return (
+                    <Draggable
+                      grid={[25, 25]}
+                      start={{ x: 0, y: 0 }}
+                      zIndex={1000}
+                    >
+                      <div>{column.name}</div>
+                    </Draggable>
+                  );
+                })}
+              </Grid>
+              <Grid item xs={9}>
+                <div style={{ margin: 20 }}>
+                  <InputWrapper
+                  // ref={setAnchorEl}
+                  // className={focused ? "focused" : ""}
+                  >
+                    {/* {value.map((option, index) => ( */}
+                    <div>
+                      <span>"hello span"</span>
+                      <CloseIcon onClick={console.log("delte")} />
+                    </div>
+                    {/* ))} */}
+                    {/* <input {...getInputProps()} /> */}
+                  </InputWrapper>
+                </div>
+                <div style={{ margin: 20 }}>
+                  <InputWrapper
+                  // ref={setAnchorEl}
+                  // className={focused ? "focused" : ""}
+                  >
+                    {/* {value.map((option, index) => ( */}
+                    <div>
+                      <span>"hello span"</span>
+                      <CloseIcon onClick={console.log("delte")} />
+                    </div>
+                    {/* ))} */}
+                    {/* <input {...getInputProps()} /> */}
+                  </InputWrapper>
+                </div>
+              </Grid>
+            </Grid>
           </CardContent>
+          <Grid item xs={10}>
+            <div>
+              <LineChart
+                width={1000}
+                height={550}
+                data={dataManipulated}
+                margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+              >
+                <XAxis dataKey="product" />
+                <Tooltip />
+                <CartesianGrid stroke="#f5f5f5" />
+                <Line
+                  type="monotone"
+                  dataKey="cost"
+                  stroke="#ff7300"
+                  yAxisId={0}
+                />
+              </LineChart>
+            </div>
+          </Grid>
         </Card>
-      </Grid>
-      <Grid item xs={10}>
-        <Grid container flexDirection="column">
-          <div>
-            <InputWrapper
-            // ref={setAnchorEl}
-            // className={focused ? "focused" : ""}
-            >
-              {/* {value.map((option, index) => ( */}
-              <div>
-                <span>"hello span"</span>
-                <CloseIcon onClick={console.log("delte")} />
-              </div>
-              {/* ))} */}
-              {/* <input {...getInputProps()} /> */}
-            </InputWrapper>
-          </div>
-          <div>
-            <LineChart
-              width={1000}
-              height={600}
-              data={dataManipulated}
-              margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-            >
-              <XAxis dataKey="product" />
-              <Tooltip />
-              <CartesianGrid stroke="#f5f5f5" />
-              <Line
-                type="monotone"
-                dataKey="cost"
-                stroke="#ff7300"
-                yAxisId={0}
-              />
-            </LineChart>
-          </div>
-        </Grid>
       </Grid>
     </Grid>
   );
