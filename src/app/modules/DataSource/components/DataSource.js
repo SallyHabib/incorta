@@ -14,7 +14,7 @@ import { useAutocomplete } from "@mui/base/AutocompleteUnstyled";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/material/styles";
-import Draggable from "react-draggable";
+import Draggable, { MouseEvent, Object } from "react-draggable";
 import CustomizedHook from "./CustomizedHook";
 import { LineChart, XAxis, Tooltip, CartesianGrid, Line } from "recharts";
 
@@ -102,6 +102,9 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
     return filtered;
   }, []);
 
+  const handleOnStop = (columnName) => {
+    console.log(columnName);
+  };
   return (
     <Grid container flexDirection="column">
       <Grid item xs={2}>
@@ -115,6 +118,7 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
                       grid={[25, 25]}
                       start={{ x: 0, y: 0 }}
                       zIndex={1000}
+                      onStop={() => handleOnStop(column.name)}
                     >
                       <div>{column.name}</div>
                     </Draggable>
