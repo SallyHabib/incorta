@@ -5,12 +5,15 @@ import {
   REQUEST_DATA_SUCCESS,
   ITEM_DELETED,
   ALL_ITEMS_DELETED,
+  REQUEST_COLUMNS_FAILED,
+  REQUEST_DATA_FAIL,
 } from "./constants";
 
 export const defaultState = {
   columns: [],
   loading: false,
   data: [],
+  errorMessage: null
 };
 
 export const dataSourceReducer = (state = defaultState, action) => {
@@ -28,6 +31,12 @@ export const dataSourceReducer = (state = defaultState, action) => {
         loading: false,
       };
 
+    case REQUEST_COLUMNS_FAILED:
+      return {
+        ...state,
+        errorMessage: action.payload
+      }
+
     case REQUEST_DATA_SUCCESS:
       return {
         ...state,
@@ -35,6 +44,12 @@ export const dataSourceReducer = (state = defaultState, action) => {
         loading: false,
       };
 
+      case REQUEST_DATA_FAIL:
+        return {
+          ...state,
+          errorMessage: action.payload
+        }
+  
     case COLUMN_DRAGGED:
       let newColumns = state.columns.map((column) => {
         if (column.name === action.payload) return { ...column, dragged: true };

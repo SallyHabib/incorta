@@ -10,10 +10,7 @@ const makeSelectColumns = () =>
   );
 
 const makeSelectData = () =>
-  createSelector(
-    selectDataSource,
-    (dataSourceState) => dataSourceState.data
-  );
+  createSelector(selectDataSource, (dataSourceState) => dataSourceState.data);
 
 const makeSelectLoading = () =>
   createSelector(
@@ -21,16 +18,16 @@ const makeSelectLoading = () =>
     (dataSourceState) => dataSourceState.loading
   );
 
-//  const makeSelectErrorMessage = () =>
-//    createSelector(
-//     selectDataSource,
-//     shipmentsState => shipmentsState.errorMessage,
-//    );
+const makeSelectErrorMessage = () =>
+  createSelector(
+    selectDataSource,
+    (dataSourceState) => dataSourceState.errorMessage
+  );
 
 export {
   selectDataSource,
   makeSelectColumns,
   makeSelectLoading,
-  makeSelectData
-  //  makeSelectErrorMessage
+  makeSelectData,
+  makeSelectErrorMessage,
 };

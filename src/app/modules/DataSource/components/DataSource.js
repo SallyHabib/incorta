@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { Grid, Card, CardContent } from "@mui/material";
+import { Grid, Card, CardContent, Alert } from "@mui/material";
 import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
 import {
@@ -15,9 +15,10 @@ import {
   makeSelectColumns,
   makeSelectLoading,
   makeSelectData,
+  makeSelectErrorMessage,
 } from "../state/selectors";
 import Draggable from "react-draggable";
-import CustomizedHook from "./CustomizedHook";
+import CustomizedInput from "./CustomizedInput";
 import {
   LineChart,
   XAxis,
@@ -30,6 +31,7 @@ import {
 const DataSource = ({
   onGetColumns,
   columns,
+  errorMessage,
   onGetData,
   data,
   onColumnDragged,
@@ -95,7 +97,7 @@ const DataSource = ({
   }, [selectedValueDimension, selectedValueMeasure]);
 
   let dimensionsArray = [];
-  dimensionsArray = columns.reduce(function (filtered, column) {
+  dimensionsArray = columns.reduce((filtered, column) => {
     if (column.function === "dimension") {
       var someNewValue = { title: column.name };
       filtered.push(someNewValue);
@@ -104,7 +106,7 @@ const DataSource = ({
   }, []);
 
   let measuresArray = [];
-  measuresArray = columns.reduce(function (filtered, column) {
+  measuresArray = columns.reduce((filtered, column) => {
     if (column.function === "measure") {
       var someNewValue = { title: column.name };
       filtered.push(someNewValue);
@@ -157,99 +159,104 @@ const DataSource = ({
       }
     }
   };
-
   return (
-    <Grid container flexDirection="column">
-      <Grid item xs={12}>
-        <Card sx={{ height: 800, width: 1200 }}>
-          <CardContent>
-            <Grid container flexDirection="row">
-              <Grid item xs={3}>
-                {columns.map((column) => {
-                  if (!column.dragged)
-                    return (
-                      <Draggable
-                        grid={[25, 25]}
-                        start={{ x: 0, y: 0 }}
-                        zIndex={1000}
-                        onStop={() => handleOnStop(column.name)}
-                      >
-                        <div>{column.name}</div>
-                      </Draggable>
-                    );
-                })}
+    <React.Fragment>
+      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+      <Grid container flexDirection="column">
+        <Grid item xs={12}>
+          <Card sx={{ height: 800, width: 1200 }}>
+            <CardContent>
+              <Grid container flexDirection="row">
+                <Grid item xs={3}>
+                  {columns.map((column) => {
+                    if (!column.dragged)
+                      return (
+                        <Draggable
+                          key={column.name}
+                          grid={[25, 25]}
+                          start={{ x: 0, y: 0 }}
+                          zIndex={1000}
+                          onStop={() => handleOnStop(column.name)}
+                        >
+                          <div>{column.name}</div>
+                        </Draggable>
+                      );
+                  })}
+                </Grid>
+                <Grid item xs={9}>
+                  <CustomizedInput
+                    defaultValue={{ title: "product" }}
+                    optionsProps={dimensionsArray}
+                    title={"dimension"}
+                    value={selectedValueDimension}
+                    onDeleteProp={onDelete}
+                  />
+                  <CustomizedInput
+                    defaultValue={{ title: "cost" }}
+                    optionsProps={measuresArray}
+                    title={"measure"}
+                    value={selectedValueMeasure}
+                    onDeleteProp={onDelete}
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={9}>
-                <CustomizedHook
-                  defaultValue={{ title: "product" }}
-                  optionsProps={dimensionsArray}
-                  title={"dimension"}
-                  value={selectedValueDimension}
-                  onDeleteProp={onDelete}
-                />
-                <CustomizedHook
-                  defaultValue={{ title: "cost" }}
-                  optionsProps={measuresArray}
-                  title={"measure"}
-                  value={selectedValueMeasure}
-                  onDeleteProp={onDelete}
-                />
-              </Grid>
-            </Grid>
-          </CardContent>
-          <Grid item xs={12}>
-            <div>
-              <LineChart
-                width={1150}
-                height={550}
-                data={dataManipulated}
-                margin={{ top: 5, left: 20, bottom: 5 }}
-              >
-                <XAxis
-                  dataKey={xLabel}
-                  style={{ fontSize: 10 }}
-                  label={{
-                    fontSize: 20,
-                    value: xLabel,
-                    position: "insideCenterRight",
-                    dy: 10,
-                  }}
-                />
+            </CardContent>
+            <Grid item xs={12}>
+              <div>
+                <LineChart
+                  width={1150}
+                  height={550}
+                  data={dataManipulated}
+                  margin={{ top: 5, left: 20, bottom: 5 }}
+                >
+                  <XAxis
+                    dataKey={xLabel}
+                    style={{ fontSize: 10 }}
+                    label={{
+                      fontSize: 20,
+                      value: xLabel,
+                      position: "insideCenterRight",
+                      dy: 10,
+                    }}
+                  />
 
-                {yAxisLabels.map((label, index) => {
-                  return (
-                    <YAxis
-                      yAxisId={index}
-                      dataKey={label}
-                      style={{ fontSize: 10 }}
-                      label={{
-                        fontSize: 12,
-                        value: label,
-                        position: "insideCenterRight",
-                        dx: 0,
-                        dy: 50
-                      }}
-                    />
-                  );
-                })}
-                <Tooltip />
-                <CartesianGrid stroke="#f5f5f5" />
-                {yAxisLabels.map((label, index) => {
-                  return (
-                    <Line
-                      type="linear"
-                      dataKey={label}
-                      stroke="#ff7300"
-                      yAxisId={index}
-                    />
-                  );
-                })}
-              </LineChart>
-            </div>
-          </Grid>
-        </Card>
+                  {yAxisLabels.map((label, index) => {
+                    return (
+                      <YAxis
+                        key={index}
+                        yAxisId={index}
+                        dataKey={label}
+                        style={{ fontSize: 10 }}
+                        label={{
+                          fontSize: 12,
+                          value: label,
+                          position: "insideCenterRight",
+                          dx: 0,
+                          dy: 50,
+                        }}
+                      />
+                    );
+                  })}
+                  <Tooltip />
+                  <CartesianGrid stroke="#f5f5f5" />
+                  {yAxisLabels.map((label, index) => {
+                    return (
+                      <Line
+                        key={label}
+                        type="linear"
+                        dataKey={label}
+                        stroke="#ff7300"
+                        yAxisId={index}
+                      />
+                    );
+                  })}
+                </LineChart>
+              </div>
+            </Grid>
+          </Card>
+        </Grid>
       </Grid>
-    </Grid>
+    </React.Fragment>
   );
 };
 
@@ -267,6 +274,7 @@ const mapStateToProps = createStructuredSelector({
   columns: makeSelectColumns(),
   loading: makeSelectLoading(),
   data: makeSelectData(),
+  errorMessage: makeSelectErrorMessage(),
 });
 
 export function mapDispatchToProps(dispatch) {

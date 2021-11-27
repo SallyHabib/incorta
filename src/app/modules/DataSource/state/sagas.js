@@ -2,36 +2,46 @@ import { takeEvery, all, put } from "redux-saga/effects";
 import axios from "axios";
 import {
   REQUEST_COLUMNS,
-  REQUEST_COLUMNS_SUCCESS,
   REQUEST_DATA,
-  REQUEST_DATA_SUCCESS,
 } from "./constants";
+import {
+  getColumnsFailed,
+  getColumnsSuccess,
+  getDataFailed,
+  getDataSuccess,
+} from "./actions";
 
 let baseUrl = "https://plotter-task.herokuapp.com/columns";
-// const proxyurl = "https://cors-anywhere.herokuapp.com/";
 
 export function* getColumns() {
   let columns = [];
+  let errorMessage = null;
   yield axios
     .get(baseUrl)
-    .then(function (response) {
+    .then((response) => {
       columns = response.data;
     })
-    .catch(function (error) {
-      return error;
+    .catch((error) => {
+      errorMessage = error.message;
     });
-  yield put({
-    type: REQUEST_COLUMNS_SUCCESS,
-    payload: columns.map((column) => {
-      if (column.name === "Cost" || column.name === "Product")
-        return { ...column, dragged: true };
-      else return { ...column, dragged: false };
-    }),
-  });
+  if (errorMessage) {
+    yield put(getColumnsFailed("There was a problem fetching Columns please try again"));
+    return;
+  }
+  yield put(
+    getColumnsSuccess(
+      columns.map((column) => {
+        if (column.name === "Cost" || column.name === "Product")
+          return { ...column, dragged: true };
+        else return { ...column, dragged: false };
+      })
+    )
+  );
 }
 
 export function* getData(action) {
   baseUrl = "https://plotter-task.herokuapp.com/data";
+  let errorMessage = null;
   let data = [];
   const headers = {
     "Content-Type": "application/json",
@@ -45,17 +55,19 @@ export function* getData(action) {
       },
       { headers }
     )
-    .then(function (response) {
+    .then((response) => {
       data = response.data;
     })
-    .catch(function (error) {
-      console.log(error);
-      return error;
+    .catch((error) => {
+      errorMessage = error.message;
     });
-  yield put({
-    type: REQUEST_DATA_SUCCESS,
-    payload: data,
-  });
+
+  if (errorMessage) {
+    yield put(getDataFailed("There was an error fetching data please try again"));
+    return;
+  }
+
+  yield put(getDataSuccess(data));
 }
 
 export default function* dataSourceSaga() {

@@ -1,58 +1,73 @@
-
 import {
   ALL_ITEMS_DELETED,
   COLUMN_DRAGGED,
   ITEM_DELETED,
-  REQUEST_COLUMNS, REQUEST_COLUMNS_SUCCESS, REQUEST_DATA, REQUEST_DATA_SUCCESS
+  REQUEST_COLUMNS,
+  REQUEST_COLUMNS_FAILED,
+  REQUEST_COLUMNS_SUCCESS,
+  REQUEST_DATA,
+  REQUEST_DATA_SUCCESS,
+  REQUEST_DATA_FAIL
 } from "./constants";
 
-export const getColumns= () => {
+export const getColumns = () => {
   return {
     type: REQUEST_COLUMNS,
   };
-}
+};
 
-export const getData= (payload) => {
+export const getData = (payload) => {
   return {
     type: REQUEST_DATA,
-    payload
+    payload,
   };
-}
+};
 
-export const getColumnsSuccess= () => {
+export const getColumnsSuccess = (payload) => {
   return {
     type: REQUEST_COLUMNS_SUCCESS,
+    payload
   };
-}
+};
 
-export const getDataSuccess= (payload) => {
+export const getColumnsFailed = (payload) => {
+  return {
+    type: REQUEST_COLUMNS_FAILED,
+    payload
+  };
+};
+
+export const getDataSuccess = (payload) => {
   return {
     type: REQUEST_DATA_SUCCESS,
-    payload
+    payload,
   };
-}
+};
 
-export const columnDragged= (payload) => {
+export const getDataFailed = (payload) => {
+  return {
+    type: REQUEST_DATA_FAIL,
+    payload,
+  };
+};
+
+
+export const columnDragged = (payload) => {
   return {
     type: COLUMN_DRAGGED,
-    payload
+    payload,
   };
-}
+};
 
-export const itemDeleted= (payload) => {
+export const itemDeleted = (payload) => {
   return {
     type: ITEM_DELETED,
-    payload
+    payload,
   };
-}
+};
 
-export const allItemsDeleted= () => {
+export const allItemsDeleted = () => {
   return {
-    type: ALL_ITEMS_DELETED
+    type: ALL_ITEMS_DELETED,
   };
-}
-
-
-
-
-
+};
