@@ -22,23 +22,34 @@ export function* getColumns() {
     });
   yield put({
     type: REQUEST_COLUMNS_SUCCESS,
-    payload: columns,
+    payload: columns.map((column) => {
+      if (column.name === "Cost" || column.name === "Product")
+        return { ...column, dragged: true };
+      else return { ...column, dragged: false };
+    }),
   });
 }
 
 export function* getData(action) {
   baseUrl = "https://plotter-task.herokuapp.com/data";
   let data = [];
-  const headers = { 
-    'Content-Type': 'application/json'
-};
+  const headers = {
+    "Content-Type": "application/json",
+  };
   yield axios
-    .post(baseUrl, { measures: action.payload.measures, dimension: action.payload.dimension }, {headers})
+    .post(
+      baseUrl,
+      {
+        measures: action.payload.measures,
+        dimension: action.payload.dimension,
+      },
+      { headers }
+    )
     .then(function (response) {
       data = response.data;
     })
     .catch(function (error) {
-      console.log(error)
+      console.log(error);
       return error;
     });
   yield put({

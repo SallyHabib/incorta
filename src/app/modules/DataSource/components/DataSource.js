@@ -4,7 +4,13 @@ import { compose } from "redux";
 import { Grid, Card, CardContent } from "@mui/material";
 import PropTypes from "prop-types";
 import { createStructuredSelector } from "reselect";
-import { getColumns, getData } from "../state/actions";
+import {
+  getColumns,
+  getData,
+  columnDragged,
+  itemDeleted,
+  allItemsDeleted,
+} from "../state/actions";
 import {
   makeSelectColumns,
   makeSelectLoading,
@@ -12,9 +18,24 @@ import {
 } from "../state/selectors";
 import Draggable from "react-draggable";
 import CustomizedHook from "./CustomizedHook";
-import { LineChart, XAxis, Tooltip, CartesianGrid, Line } from "recharts";
+import {
+  LineChart,
+  XAxis,
+  Tooltip,
+  CartesianGrid,
+  Line,
+  YAxis,
+} from "recharts";
 
-const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
+const DataSource = ({
+  onGetColumns,
+  columns,
+  onGetData,
+  data,
+  onColumnDragged,
+  onItemDeleted,
+  onAllItemsDeleted,
+}) => {
   const [selectedValueDimension, setSelectedValueDimension] = useState([
     {
       title: "Product",
@@ -97,6 +118,8 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
       found.function === "dimension" &&
       !selectedValueDimension.find((item) => item.title === columnName)
     ) {
+      if (selectedValueDimension.length)
+        onItemDeleted(selectedValueDimension[0].title);
       setSelectedValueDimension([
         {
           title: columnName,
@@ -113,12 +136,16 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
         },
       ]);
     }
+    onColumnDragged(columnName);
   };
 
   const onDelete = (item) => {
     if (item.option === "dimension") {
+      onAllItemsDeleted();
       setSelectedValueDimension([]);
       setSelectedValueMeasure([]);
+      setXLabel("");
+      setYaxisLabels([]);
     } else {
       if (item.option === "measure") {
         setSelectedValueMeasure(
@@ -126,28 +153,30 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
             return measure.title !== item.title;
           })
         );
+        onItemDeleted(item.title);
       }
     }
   };
 
   return (
     <Grid container flexDirection="column">
-      <Grid item xs={2}>
-        <Card sx={{ height: 800, width: 1000 }}>
+      <Grid item xs={12}>
+        <Card sx={{ height: 800, width: 1200 }}>
           <CardContent>
             <Grid container flexDirection="row">
               <Grid item xs={3}>
                 {columns.map((column) => {
-                  return (
-                    <Draggable
-                      grid={[25, 25]}
-                      start={{ x: 0, y: 0 }}
-                      zIndex={1000}
-                      onStop={() => handleOnStop(column.name)}
-                    >
-                      <div>{column.name}</div>
-                    </Draggable>
-                  );
+                  if (!column.dragged)
+                    return (
+                      <Draggable
+                        grid={[25, 25]}
+                        start={{ x: 0, y: 0 }}
+                        zIndex={1000}
+                        onStop={() => handleOnStop(column.name)}
+                      >
+                        <div>{column.name}</div>
+                      </Draggable>
+                    );
                 })}
               </Grid>
               <Grid item xs={9}>
@@ -168,21 +197,47 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
               </Grid>
             </Grid>
           </CardContent>
-          <Grid item xs={10}>
+          <Grid item xs={12}>
             <div>
               <LineChart
-                width={1000}
+                width={1150}
                 height={550}
                 data={dataManipulated}
-                margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
+                margin={{ top: 5, left: 20, bottom: 5 }}
               >
-                <XAxis dataKey={xLabel} />
+                <XAxis
+                  dataKey={xLabel}
+                  style={{ fontSize: 10 }}
+                  label={{
+                    fontSize: 20,
+                    value: xLabel,
+                    position: "insideCenterRight",
+                    dy: 10,
+                  }}
+                />
+
+                {yAxisLabels.map((label, index) => {
+                  return (
+                    <YAxis
+                      yAxisId={index}
+                      dataKey={label}
+                      style={{ fontSize: 10 }}
+                      label={{
+                        fontSize: 12,
+                        value: label,
+                        position: "insideCenterRight",
+                        dx: 0,
+                        dy: 50
+                      }}
+                    />
+                  );
+                })}
                 <Tooltip />
                 <CartesianGrid stroke="#f5f5f5" />
                 {yAxisLabels.map((label, index) => {
                   return (
                     <Line
-                      type="monotone"
+                      type="linear"
                       dataKey={label}
                       stroke="#ff7300"
                       yAxisId={index}
@@ -201,8 +256,11 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
 DataSource.propTypes = {
   loading: PropTypes.bool,
   shipments: PropTypes.array,
-  onGetShipments: PropTypes.func,
-  onFilterShipments: PropTypes.func,
+  onGetColumns: PropTypes.func,
+  onGetData: PropTypes.func,
+  onColumnDragged: PropTypes.func,
+  onItemDeleted: PropTypes.func,
+  onAllItemsDeleted: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -218,6 +276,15 @@ export function mapDispatchToProps(dispatch) {
     },
     onGetData: (payload) => {
       dispatch(getData(payload));
+    },
+    onColumnDragged: (payload) => {
+      dispatch(columnDragged(payload));
+    },
+    onItemDeleted: (payload) => {
+      dispatch(itemDeleted(payload));
+    },
+    onAllItemsDeleted: () => {
+      dispatch(allItemsDeleted());
     },
   };
 }

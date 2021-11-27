@@ -1,7 +1,6 @@
 import * as React from "react";
 import PropTypes from "prop-types";
 import { useAutocomplete } from "@mui/base/AutocompleteUnstyled";
-import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/material/styles";
 
@@ -193,23 +192,15 @@ export default function CustomizedHook({
           {valueState.map((option, index) => (
             <StyledTag
               label={option.title}
-              onDelete={() => onDeleteProp({ option: title, title: option.title })}
+              onDelete={() =>
+                onDeleteProp({ option: title, title: option.title })
+              }
             />
           ))}
 
           <input {...getInputProps()} />
         </InputWrapper>
       </div>
-      {groupedOptions.length > 0 ? (
-        <Listbox {...getListboxProps()}>
-          {groupedOptions.map((option, index) => (
-            <li {...getOptionProps({ option, index })}>
-              <span>{option.title}</span>
-              <CheckIcon fontSize="small" />
-            </li>
-          ))}
-        </Listbox>
-      ) : null}
     </Root>
   );
 }
