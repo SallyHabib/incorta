@@ -10,79 +10,64 @@ import {
   makeSelectLoading,
   makeSelectData,
 } from "../state/selectors";
-import { useAutocomplete } from "@mui/base/AutocompleteUnstyled";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
-import { styled } from "@mui/material/styles";
-import Draggable, { MouseEvent, Object } from "react-draggable";
+import Draggable from "react-draggable";
 import CustomizedHook from "./CustomizedHook";
 import { LineChart, XAxis, Tooltip, CartesianGrid, Line } from "recharts";
 
 const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
-  const Root = styled("div")(
-    ({ theme }) => `
-    color: ${
-      theme.palette.mode === "dark"
-        ? "rgba(255,255,255,0.65)"
-        : "rgba(0,0,0,.85)"
-    };
-    font-size: 14px;
-  `
-  );
-
-  const Label = styled("label")`
-    padding: 0 0 4px;
-    line-height: 1.5;
-    display: block;
-  `;
-
-  const InputWrapper = styled("div")(
-    ({ theme }) => `
-    width: 300px;
-    border: 1px solid ${theme.palette.mode === "dark" ? "#434343" : "#d9d9d9"};
-    background-color: ${theme.palette.mode === "dark" ? "#141414" : "#fff"};
-    border-radius: 4px;
-    padding: 1px;
-    display: flex;
-    flex-wrap: wrap;
-  
-    &:hover {
-      border-color: ${theme.palette.mode === "dark" ? "#177ddc" : "#40a9ff"};
-    }
-  
-    &.focused {
-      border-color: ${theme.palette.mode === "dark" ? "#177ddc" : "#40a9ff"};
-      box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
-    }
-  
-    & input {
-      background-color: ${theme.palette.mode === "dark" ? "#141414" : "#fff"};
-      color: ${
-        theme.palette.mode === "dark"
-          ? "rgba(255,255,255,0.65)"
-          : "rgba(0,0,0,.85)"
-      };
-      height: 30px;
-      box-sizing: border-box;
-      padding: 4px 6px;
-      width: 0;
-      min-width: 30px;
-      flex-grow: 1;
-      border: 0;
-      margin: 0;
-      outline: 0;
-    }
-  `
-  );
+  const [selectedValueDimension, setSelectedValueDimension] = useState([
+    {
+      title: "Product",
+    },
+  ]);
+  const [selectedValueMeasure, setSelectedValueMeasure] = useState([
+    {
+      title: "Cost",
+    },
+  ]);
+  const [yAxisLabels, setYaxisLabels] = useState([]);
+  const [xLabel, setXLabel] = useState("");
+  const [dataManipulated, setDataManipulated] = useState([]);
 
   useEffect(() => {
     onGetColumns();
-    onGetData();
+    onGetData({
+      measures: selectedValueMeasure.map((item) => {
+        return item.title;
+      }),
+      dimension: selectedValueDimension[0].title,
+    });
   }, []);
 
-  let dataManipulated = data[0]?.values.map((value, index) => {
-    return { product: value, cost: data[1]?.values[index] };
-  });
+  useEffect(() => {
+    let labels = [];
+    for (let i = 1; i < data.length; i++) {
+      labels.push(data[i].name);
+    }
+    setYaxisLabels(labels);
+    setXLabel(data[0]?.name);
+    setDataManipulated(
+      data[0]?.values.map((value, index) => {
+        let newObj = {};
+        newObj[data[0].name] = value;
+        for (let i = 0; i < labels.length; i++) {
+          let label = labels[i];
+          let labelValue = data.find((item) => item.name === labels[i]);
+          newObj[label] = labelValue.values[index];
+        }
+        return newObj;
+      })
+    );
+  }, [data]);
+
+  useEffect(() => {
+    onGetData({
+      measures: selectedValueMeasure.map((item) => {
+        return item.title;
+      }),
+      dimension: selectedValueDimension[0].title,
+    });
+  }, [selectedValueDimension, selectedValueMeasure]);
 
   let dimensionsArray = [];
   dimensionsArray = columns.reduce(function (filtered, column) {
@@ -103,7 +88,27 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
   }, []);
 
   const handleOnStop = (columnName) => {
-    console.log(columnName);
+    let found = columns.find((column) => column.name === columnName);
+    if (
+      found.function === "dimension" &&
+      !selectedValueDimension.find((item) => item.title === columnName)
+    ) {
+      setSelectedValueDimension([
+        {
+          title: columnName,
+        },
+      ]);
+    } else if (
+      found.function === "measure" &&
+      !selectedValueMeasure.find((item) => item.title === columnName)
+    ) {
+      setSelectedValueMeasure([
+        ...selectedValueMeasure,
+        {
+          title: columnName,
+        },
+      ]);
+    }
   };
   return (
     <Grid container flexDirection="column">
@@ -130,11 +135,13 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
                   defaultValue={{ title: "product" }}
                   optionsProps={dimensionsArray}
                   title={"dimension"}
+                  value={selectedValueDimension}
                 />
                 <CustomizedHook
                   defaultValue={{ title: "cost" }}
                   optionsProps={measuresArray}
                   title={"measure"}
+                  value={selectedValueMeasure}
                 />
               </Grid>
             </Grid>
@@ -147,15 +154,19 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
                 data={dataManipulated}
                 margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
               >
-                <XAxis dataKey="product" />
+                <XAxis dataKey={xLabel} />
                 <Tooltip />
                 <CartesianGrid stroke="#f5f5f5" />
-                <Line
-                  type="monotone"
-                  dataKey="cost"
-                  stroke="#ff7300"
-                  yAxisId={0}
-                />
+                {yAxisLabels.map((label, index) => {
+                  return (
+                    <Line
+                      type="monotone"
+                      dataKey={label}
+                      stroke="#ff7300"
+                      yAxisId={index}
+                    />
+                  );
+                })}
               </LineChart>
             </div>
           </Grid>
@@ -165,12 +176,12 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
   );
 };
 
-// Shipments.propTypes = {
-//   loading: PropTypes.bool,
-//   shipments: PropTypes.array,
-//   onGetShipments: PropTypes.func,
-//   onFilterShipments: PropTypes.func,
-// };
+DataSource.propTypes = {
+  loading: PropTypes.bool,
+  shipments: PropTypes.array,
+  onGetShipments: PropTypes.func,
+  onFilterShipments: PropTypes.func,
+};
 
 const mapStateToProps = createStructuredSelector({
   columns: makeSelectColumns(),
@@ -183,8 +194,8 @@ export function mapDispatchToProps(dispatch) {
     onGetColumns: () => {
       dispatch(getColumns());
     },
-    onGetData: () => {
-      dispatch(getData());
+    onGetData: (payload) => {
+      dispatch(getData(payload));
     },
   };
 }

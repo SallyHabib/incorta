@@ -1,6 +1,5 @@
 import {
   REQUEST_COLUMNS,
-  REQUEST_COLUMNS_FAILED,
   REQUEST_COLUMNS_SUCCESS,
   REQUEST_DATA_SUCCESS,
 } from "./constants";
@@ -20,7 +19,6 @@ export const dataSourceReducer = (state = defaultState, action) => {
       };
 
     case REQUEST_COLUMNS_SUCCESS:
-		console.log("HERE", action.payload)
       return {
         ...state,
         columns: action.payload,

@@ -2,15 +2,13 @@ import { takeEvery, all, put } from "redux-saga/effects";
 import axios from "axios";
 import {
   REQUEST_COLUMNS,
-  REQUEST_COLUMNS_FAILED,
   REQUEST_COLUMNS_SUCCESS,
   REQUEST_DATA,
   REQUEST_DATA_SUCCESS,
 } from "./constants";
-import { continueStatement } from "@babel/types";
 
 let baseUrl = "https://plotter-task.herokuapp.com/columns";
-const proxyurl = "https://cors-anywhere.herokuapp.com/";
+// const proxyurl = "https://cors-anywhere.herokuapp.com/";
 
 export function* getColumns() {
   let columns = [];
@@ -35,7 +33,7 @@ export function* getData(action) {
     'Content-Type': 'application/json'
 };
   yield axios
-    .post(baseUrl, { measures: ["Cost"], dimension: "Product" }, {headers})
+    .post(baseUrl, { measures: action.payload.measures, dimension: action.payload.dimension }, {headers})
     .then(function (response) {
       data = response.data;
     })
