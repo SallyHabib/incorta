@@ -61,12 +61,16 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
   }, [data]);
 
   useEffect(() => {
-    onGetData({
-      measures: selectedValueMeasure.map((item) => {
-        return item.title;
-      }),
-      dimension: selectedValueDimension[0].title,
-    });
+    if (selectedValueDimension.length) {
+      onGetData({
+        measures: selectedValueMeasure.map((item) => {
+          return item.title;
+        }),
+        dimension: selectedValueDimension[0].title,
+      });
+    } else {
+      setDataManipulated([]);
+    }
   }, [selectedValueDimension, selectedValueMeasure]);
 
   let dimensionsArray = [];
@@ -110,6 +114,22 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
       ]);
     }
   };
+
+  const onDelete = (item) => {
+    if (item.option === "dimension") {
+      setSelectedValueDimension([]);
+      setSelectedValueMeasure([]);
+    } else {
+      if (item.option === "measure") {
+        setSelectedValueMeasure(
+          selectedValueMeasure.filter((measure) => {
+            return measure.title !== item.title;
+          })
+        );
+      }
+    }
+  };
+
   return (
     <Grid container flexDirection="column">
       <Grid item xs={2}>
@@ -136,12 +156,14 @@ const DataSource = ({ onGetColumns, columns, onGetData, data }) => {
                   optionsProps={dimensionsArray}
                   title={"dimension"}
                   value={selectedValueDimension}
+                  onDeleteProp={onDelete}
                 />
                 <CustomizedHook
                   defaultValue={{ title: "cost" }}
                   optionsProps={measuresArray}
                   title={"measure"}
                   value={selectedValueMeasure}
+                  onDeleteProp={onDelete}
                 />
               </Grid>
             </Grid>

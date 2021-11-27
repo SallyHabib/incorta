@@ -162,12 +162,12 @@ export default function CustomizedHook({
   value,
   optionsProps,
   defaultValue,
+  onDeleteProp,
 }) {
   const {
     getRootProps,
     getInputLabelProps,
     getInputProps,
-    getTagProps,
     getListboxProps,
     getOptionProps,
     groupedOptions,
@@ -184,14 +184,7 @@ export default function CustomizedHook({
   React.useEffect(() => {
     setValueState(value);
   }, [value]);
-  
-  const onDelete = (title) => {
-    console.log("heheheheh")
-    let newValue = valueState.filter((valueItem) => {
-      return valueItem.title !== title;
-    });
-    setValueState(newValue);
-  };
+
   return (
     <Root>
       <div {...getRootProps()}>
@@ -200,7 +193,7 @@ export default function CustomizedHook({
           {valueState.map((option, index) => (
             <StyledTag
               label={option.title}
-              onDelete={() => onDelete(option.title)}
+              onDelete={() => onDeleteProp({ option: title, title: option.title })}
             />
           ))}
 
