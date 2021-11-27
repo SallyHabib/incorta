@@ -58,7 +58,7 @@ const InputWrapper = styled("div")(
 `
 );
 
-function Tag(props) {
+const Tag = (props) => {
   const { label, onDelete, ...other } = props;
   return (
     <div {...other}>
@@ -66,7 +66,7 @@ function Tag(props) {
       <CloseIcon onClick={onDelete} />
     </div>
   );
-}
+};
 
 Tag.propTypes = {
   label: PropTypes.string.isRequired,
@@ -123,7 +123,7 @@ export default function CustomizedInput({
     focused,
     setAnchorEl,
   } = useAutocomplete({
-    id: "customized-hook-demo",
+    id: "customized-input",
     defaultValue: [defaultValue],
     multiple: true,
     options: optionsProps,

@@ -1,12 +1,12 @@
-import { selectShipments, makeSelectShipments } from '../state/selectors';
-import myData from "../state/data.json";
+import { selectDataSource, makeSelectColumns } from '../state/selectors';
 
 describe('selectDataSource', () => {
   it('should select the dataSource state', () => {
     const dataSourceState = {
       columns: [],
       loading: false,
-      data:[]
+      data:[],
+      errorMessage: null
     };
     const mockedState = {
       columns: dataSourceState,

@@ -1,9 +1,6 @@
 import { takeEvery, all, put } from "redux-saga/effects";
 import axios from "axios";
-import {
-  REQUEST_COLUMNS,
-  REQUEST_DATA,
-} from "./constants";
+import { REQUEST_COLUMNS, REQUEST_DATA } from "./constants";
 import {
   getColumnsFailed,
   getColumnsSuccess,
@@ -25,7 +22,9 @@ export function* getColumns() {
       errorMessage = error.message;
     });
   if (errorMessage) {
-    yield put(getColumnsFailed("There was a problem fetching Columns please try again"));
+    yield put(
+      getColumnsFailed("There was a problem fetching Columns please try again")
+    );
     return;
   }
   yield put(
@@ -63,7 +62,9 @@ export function* getData(action) {
     });
 
   if (errorMessage) {
-    yield put(getDataFailed("There was an error fetching data please try again"));
+    yield put(
+      getDataFailed("There was an error fetching data please try again")
+    );
     return;
   }
 

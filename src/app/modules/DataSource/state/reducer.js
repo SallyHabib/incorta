@@ -13,7 +13,7 @@ export const defaultState = {
   columns: [],
   loading: false,
   data: [],
-  errorMessage: null
+  errorMessage: null,
 };
 
 export const dataSourceReducer = (state = defaultState, action) => {
@@ -34,8 +34,8 @@ export const dataSourceReducer = (state = defaultState, action) => {
     case REQUEST_COLUMNS_FAILED:
       return {
         ...state,
-        errorMessage: action.payload
-      }
+        errorMessage: action.payload,
+      };
 
     case REQUEST_DATA_SUCCESS:
       return {
@@ -44,12 +44,12 @@ export const dataSourceReducer = (state = defaultState, action) => {
         loading: false,
       };
 
-      case REQUEST_DATA_FAIL:
-        return {
-          ...state,
-          errorMessage: action.payload
-        }
-  
+    case REQUEST_DATA_FAIL:
+      return {
+        ...state,
+        errorMessage: action.payload,
+      };
+
     case COLUMN_DRAGGED:
       let newColumns = state.columns.map((column) => {
         if (column.name === action.payload) return { ...column, dragged: true };

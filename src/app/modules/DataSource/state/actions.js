@@ -7,7 +7,7 @@ import {
   REQUEST_COLUMNS_SUCCESS,
   REQUEST_DATA,
   REQUEST_DATA_SUCCESS,
-  REQUEST_DATA_FAIL
+  REQUEST_DATA_FAIL,
 } from "./constants";
 
 export const getColumns = () => {
@@ -26,14 +26,14 @@ export const getData = (payload) => {
 export const getColumnsSuccess = (payload) => {
   return {
     type: REQUEST_COLUMNS_SUCCESS,
-    payload
+    payload,
   };
 };
 
 export const getColumnsFailed = (payload) => {
   return {
     type: REQUEST_COLUMNS_FAILED,
-    payload
+    payload,
   };
 };
 
@@ -50,7 +50,6 @@ export const getDataFailed = (payload) => {
     payload,
   };
 };
-
 
 export const columnDragged = (payload) => {
   return {

@@ -8,7 +8,8 @@ describe("dataSourceReducer", () => {
     defaultState = {
       columns: [],
       loading: false,
-      data: []
+      data: [],
+      errorMessage: null
     };
   });
 

@@ -213,7 +213,7 @@ const DataSource = ({
                     dataKey={xLabel}
                     style={{ fontSize: 10 }}
                     label={{
-                      fontSize: 20,
+                      fontSize: 12,
                       value: xLabel,
                       position: "insideCenterRight",
                       dy: 10,

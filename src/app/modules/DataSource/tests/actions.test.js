@@ -4,12 +4,12 @@ import { getColumns, getColumnsSuccess } from "../state/actions";
 describe("Columns Actions", () => {
   describe("getColumnsSuccess", () => {
     it("should return the  from the api", () => {
-      const columns = [{ title: "product", function: "dimension" }];
+      const payload = [{ title: "product", function: "dimension" }];
       const expectedResult = {
         type: REQUEST_COLUMNS_SUCCESS,
-        columns,
+        payload,
       };
-      expect(getColumnsSuccess(shipments)).toEqual(expectedResult);
+      expect(getColumnsSuccess(payload)).toEqual(expectedResult);
     });
   });
 
